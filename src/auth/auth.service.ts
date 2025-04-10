@@ -11,7 +11,6 @@ import { RegisterDto } from './dto/register.dto';
 
 @Injectable()
 export class AuthService {
-// truyền đối tượng, nói thật về khoản này prisma sẽ khỏe hơn
 constructor(
 @InjectModel(User.name) private readonly user_model = Model<User>,
 private readonly jwtService : JwtService,
