@@ -147,9 +147,11 @@ export class SubTypeLawyer extends Document {
   subType: string[];
 }
 
+
+
 // tạo schema
 export const UserSchema = SchemaFactory.createForClass(User);
 export const VipPackageSchema = SchemaFactory.createForClass(VipPackage);
 export const LearnPackageSchema = SchemaFactory.createForClass(LearnPackage);
 export const TypeLawyerSchema = SchemaFactory.createForClass(TypeLawyer);
-export const SubTypeLawyerSchema = SchemaFactory.createForClass(SubTypeLawyer);
+export const SubTypeLawyerSchema = SchemaFactory.createForClass(SubTypeLawyer); 
