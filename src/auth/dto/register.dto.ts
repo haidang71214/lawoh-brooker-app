@@ -1,5 +1,5 @@
 
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiHideProperty, ApiProperty } from "@nestjs/swagger";
 import { IsEmail, IsNotEmpty, IsOptional } from "class-validator";
 
 export class RegisterDto {
@@ -18,9 +18,9 @@ export class RegisterDto {
    @ApiProperty()
    name: string;
 
-   // @ApiProperty({ type: 'string', format: 'binary',required:false })
-   // img?: any;
+   @ApiProperty({ type: 'string', format: 'binary',required:false })
+   img?: any;
 
-   // @ApiHideProperty()
-   // avartar_url: string;
+   @ApiHideProperty()
+   avartar_url: string;
 }

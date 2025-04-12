@@ -30,7 +30,7 @@ export class User extends Document {
   password: string;
 // refresh_token
   @Prop()
-  refresh_token:string;
+  refresh_token:string; // này là cho mấy cái auth 
   @Prop()
   face_id:string;
 // avartar mình xài trong dto cho nó update
@@ -55,6 +55,10 @@ export class User extends Document {
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'LearnPackage' })
 learn_package: Types.ObjectId
 }
+
+
+
+
 // vip package
 @Schema({ timestamps: true,
    collection: 'vip_packages',
