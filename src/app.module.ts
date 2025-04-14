@@ -6,6 +6,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { LawyerModule } from './lawyer/lawyer.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -24,6 +25,7 @@ import { AuthModule } from './auth/auth.module';
     
     UsersModule,
     AuthModule,
+    LawyerModule,
   ],
 
   controllers: [AppController],

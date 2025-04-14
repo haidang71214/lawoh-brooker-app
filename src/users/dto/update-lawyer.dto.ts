@@ -3,9 +3,10 @@ import {  USER_ROLE } from './create-user.dto';
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
 
-export class UpdateUserDto {
-    // không update mail
-
+export class UpdateLawyerDto {
+    @ApiProperty()
+      @IsEmail({}, { message: 'không đúng định dạng' })
+      email: string;
    
       @ApiProperty()
       @IsNotEmpty()
@@ -26,7 +27,9 @@ export class UpdateUserDto {
    
       @ApiProperty()
       age: number;
-   
+      @ApiProperty()
+      description:string;
+      
       @ApiProperty()
       @IsEnum(USER_ROLE)
       role: USER_ROLE; // quy định cái này thuộc kiểu enum

@@ -16,5 +16,6 @@ import { TokenHeheModule } from 'utils/token.module';
       ],
   controllers: [AuthController],
   providers: [AuthService],
+  exports:[AuthService]
 })
 export class AuthModule {}

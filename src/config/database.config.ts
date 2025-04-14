@@ -24,7 +24,7 @@ export class User extends Document {
   role: string;
 // phone
   @Prop()
-  phone: string;
+  phone: number;
 // password
   @Prop()
   password: string;
@@ -38,22 +38,37 @@ export class User extends Document {
   avartar_url:string
 // access_token
   @Prop()
+  province:string // tỉnh thành của thằng user
+  @Prop()
+  warn:string // quận huyện 
+  @Prop()
   access_token:string;
 // reset_token
   @Prop()
   reset_token:string;
+// cái này là mô tả/ chỉ cho luật sư có quyền mô tả
+  @Prop()
+  description:string
   //sao* cái này để đánh giá ông luật sư
   @Prop({default:0,limit:5})
   start:number;
   // loại luật sư
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'TypeLawyer' })
   type_lawyer: Types.ObjectId;
-  // gói thuê
+  // review
+  @Prop({ type:MongooseSchema.Types.ObjectId, ref:'Review' })
+  // booking
+  reviews:Types.ObjectId;
+  @Prop({ type:MongooseSchema.Types.ObjectId,ref:'Booking' })
+  bookings:Types.ObjectId;
+  
+  // gói thuê (user)
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'VipPackage' }) // lấy từ schema VipPackage
   vip_package: Types.ObjectId;
-  // gói học
+  // gói học  (user)
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'LearnPackage' })
-learn_package: Types.ObjectId
+learn_package: Types.ObjectId;
+
 }
 
 
@@ -153,9 +168,57 @@ export class SubTypeLawyer extends Document {
 
 
 
+
+// tạo 1 bảng booking, người dùng có thể thuê theo ngày, theo tháng hay theo năm với chính thằng luật sư đó, mình sẽ là người ăn hoa hồng
+@Schema({ timestamps: true, collection: 'bookings' })
+export class Booking extends Document {
+  // Người dùng thuê luật sư
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  user_id: Types.ObjectId;
+  // Luật sư được thuê
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  lawyer_id: Types.ObjectId;
+
+  @Prop()
+  booking_date: Date;
+
+  // trong trường hợp done 
+  @Prop({ default: 'pending', enum: ['pending', 'confirmed', 'done', 'cancelled'] })
+  status: string;
+
+  @Prop()
+  note: string;
+}
+
+@Schema({ timestamps: true, collection: 'reviews' })
+export class Review extends Document {
+  // Người dùng đánh giá
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  user_id: Types.ObjectId;
+
+  // Luật sư bị đánh giá
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  lawyer_id: Types.ObjectId;
+
+  // Số sao đánh giá (1-5)
+  @Prop({ required: true, min: 1, max: 5 })
+  rating: number;
+
+  @Prop()
+  comment: string;
+
+  @Prop()
+  review_date: Date;
+}
+
+
+
+
 // tạo schema
 export const UserSchema = SchemaFactory.createForClass(User);
 export const VipPackageSchema = SchemaFactory.createForClass(VipPackage);
 export const LearnPackageSchema = SchemaFactory.createForClass(LearnPackage);
 export const TypeLawyerSchema = SchemaFactory.createForClass(TypeLawyer);
 export const SubTypeLawyerSchema = SchemaFactory.createForClass(SubTypeLawyer); 
+export const BookingSchema = SchemaFactory.createForClass(Booking);
+export const ReviewSchema = SchemaFactory.createForClass(Review);

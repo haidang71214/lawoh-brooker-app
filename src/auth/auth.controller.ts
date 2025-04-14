@@ -46,7 +46,7 @@ private readonly TokenHeheControllerService: TokenHeheControllerService
   async register(@Res() res, @Body() body: RegisterDto, @UploadedFile() file: Express.Multer.File) {
   if (file) {
       try {
-        const uploadResult = await this.cloudUploadService.uploadImage(file, 'avatars');
+        const uploadResult = await this.cloudUploadService.uploadImage(file, 'avatar');
         body.avartar_url = uploadResult.secure_url;
       } catch (error) {
         return res.status(500).json(error.message);
@@ -87,7 +87,8 @@ private readonly TokenHeheControllerService: TokenHeheControllerService
     }
   }
 
-
+ 
+  
   @Post('/LoginFaceBook')
   async loginFaceBook(
   @Body() body: LoginFacebookDto,
@@ -101,6 +102,7 @@ private readonly TokenHeheControllerService: TokenHeheControllerService
     throw new Error(error)
   } 
   }
+
 
   // cái này làm cokkie
    @Post('/extend-token')

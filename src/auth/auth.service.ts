@@ -10,6 +10,8 @@ import { KeyService } from 'src/key/key.service';
 import { RegisterDto } from './dto/register.dto';
 import { EmailService } from 'src/email/email.service';
 import { v4 as uuidv4 } from 'uuid';
+   import * as cookieParser from 'cookie-parser';
+
 
 @Injectable()
 export class AuthService {
@@ -17,7 +19,7 @@ constructor(
 @InjectModel(User.name) private readonly user_model : Model<User>,
 private readonly jwtService : JwtService,
 private readonly keyService : KeyService,
-private readonly mailService : EmailService
+ private readonly mailService : EmailService
 ){}
 
   
@@ -83,7 +85,11 @@ private readonly mailService : EmailService
         name: body.name,
         password: hashedPassword,
         phone: body.phone,
-        avartar_url: body.avartar_url
+        avartar_url: body.avartar_url,
+        age:body.age,
+        role:body.role,
+        province : body.province,
+        warn: body.warn
       };
       this.mailService.sendMail(data.email,"Bạn đã đăng kí thành công","bạn đẹp trai vãi l")
       const createdUser = await this.user_model.create(data);
@@ -217,6 +223,20 @@ async loginFacebook(
     throw new Error(error)
   }
 }
-
+// checkAdmin trả ra 1 cái theo kiểu boolean, khi import ấy, thì nhớ import cái authModule vào để nó dùng được
+async checkAdmin(
+  userId:string
+){
+  try {
+    const checkAdmin = await this.user_model.findById(userId);
+    if(checkAdmin?.role === "admin"){
+      return true
+    }else{
+      return false
+    }
+  } catch (error) {
+    throw new Error(error)
+  }
+}
 
 }

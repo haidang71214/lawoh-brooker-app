@@ -1,6 +1,7 @@
 
 import { ApiHideProperty, ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsNotEmpty, IsOptional } from "class-validator";
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional } from "class-validator";
+import { USER_ROLE } from "src/users/dto/create-user.dto";
 
 export class RegisterDto {
    @ApiProperty()
@@ -13,7 +14,7 @@ export class RegisterDto {
 
    @ApiProperty()
    @IsOptional()
-   phone: string;
+   phone: number;
 
    @ApiProperty()
    name: string;
@@ -23,4 +24,18 @@ export class RegisterDto {
 
    @ApiHideProperty()
    avartar_url: string;
+
+   @ApiProperty()
+   age: number;
+
+   @ApiProperty()
+   @IsEnum(USER_ROLE)
+   role: USER_ROLE; // quy định cái này thuộc kiểu enum khi mới đăng kí thì có role luôn hả ?
+
+
+   @ApiProperty()
+   province:string;// tỉnh thành của thằng user
+
+   @ApiProperty()
+   warn:string;//warns của thằng user
 }
