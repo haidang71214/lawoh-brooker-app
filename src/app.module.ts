@@ -7,6 +7,8 @@ import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { LawyerModule } from './lawyer/lawyer.module';
+import { VipPackageModule } from './vip-package/vip-package.module';
+import { BookingModule } from './booking/booking.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -26,6 +28,8 @@ import { LawyerModule } from './lawyer/lawyer.module';
     UsersModule,
     AuthModule,
     LawyerModule,
+    VipPackageModule,
+    BookingModule,
   ],
 
   controllers: [AppController],

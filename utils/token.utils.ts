@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken';
 
-export class TokenHeheControllerService{
+export class TokenControllerService{
   createTokenAsyncKey = (payload: any): string => {
   const privateKey = process.env.PRIVATE_KEY || 'your-private-key';
   return jwt.sign({ data: payload }, privateKey, {
