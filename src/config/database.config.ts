@@ -82,7 +82,7 @@ export class User extends Document {
   // gói thuê (user)
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'VipPackage' }) // lấy từ schema VipPackage
   vip_package: Types.ObjectId;
-  // gói học  (user)
+  // gói học(user)
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'LearnPackage' })
   learn_package: Types.ObjectId;
 }
@@ -230,12 +230,23 @@ export class Review extends Document {
   @Prop({ default:false })
   status:boolean
 }
+@Schema({ timestamps: true, collection: 'MarketPriceRanges' })
+export class MarketPriceRange extends Document{
+  @Prop({ required:true, enum:ETypeLawyer })
+  type:ETypeLawyer;
+  @Prop({ required:true,min:0})
+  minPrice:number;
+  @Prop({ required:true,min:0 })
+  maxPrice:number;
+  @Prop({required:false})
+  description:string; // mô tả, nếu cần
+}
 
 
 
 
 // tạo schema
-
+export const MarketPriceRangeSchema = SchemaFactory.createForClass(MarketPriceRange);
 export const UserSchema = SchemaFactory.createForClass(User);
 export const VipPackageSchema = SchemaFactory.createForClass(VipPackage);
 export const LearnPackageSchema = SchemaFactory.createForClass(LearnPackage);

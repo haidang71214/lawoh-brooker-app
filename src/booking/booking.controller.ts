@@ -7,7 +7,13 @@ import { UpdateBookingDto } from './dto/update-booking.dto';
 export class BookingController {
   constructor(private readonly bookingService: BookingService) {}
 
-  @Post()
+
+// những option cho booking: booking trên 1 tháng -10%, 1 năm -20%
+// người dùng tạo mới booking- tạo thì tạo cho luật sư nào, vào kiểu vụ án gì
+  @Post('')
+  // hiện ở trong cái chi tiết luật sư á
+  // cái này sẽ sẽ nhận vào cái kiểu vụ án mình cần tư vấn
+  // tính 1 cái range giá tiền theo cái type đó
   create(@Body() createBookingDto: CreateBookingDto) {
     return this.bookingService.create(createBookingDto);
   }

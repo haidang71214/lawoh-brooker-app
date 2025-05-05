@@ -37,7 +37,7 @@ export class VipPackageController {
    }
   }
 // hiện chi tiết vippackage
-  @Get(':id')
+  @Get('detail/:id')
   async findOne(@Param('id') id: string,
   @Res() res:Response) {
     try {
@@ -50,7 +50,7 @@ export class VipPackageController {
 // sửa chi tiết vip package // chỉ thay đổi giá với ngày thôi, còn quyền lợi nếu muốn thay đổi thì phải vẽ thêm chức năng
 
 // xóa vjp package
-  @Delete(':id')
+  @Delete('delete/:id')
   async remove(@Param('id') id: string,@Res() res:Response) {
     try {
       const result = await this.vipPackageService.remove(id)
@@ -60,8 +60,10 @@ export class VipPackageController {
     }
   }
 // SỬA
-  @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateVipPackageDto: UpdateVipPackageDto,@Res()res:Response) {
+  @Patch('update/:id')
+  async update(@Param('id') id: string, 
+  @Body() updateVipPackageDto: UpdateVipPackageDto,
+  @Res()res:Response) {
     try {
     const resposne = await this.vipPackageService.update(id,updateVipPackageDto)
     return res.status(resposne.status).json(resposne.result)
@@ -69,5 +71,7 @@ export class VipPackageController {
       throw new Error(error)
     }
   }
+  
+// sang bên user, lấy danh sách các user đang sử dụng gói vip, filter
 }
 

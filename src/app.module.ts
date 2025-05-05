@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { LawyerModule } from './lawyer/lawyer.module';
 import { VipPackageModule } from './vip-package/vip-package.module';
 import { BookingModule } from './booking/booking.module';
+import { PriceRangeModule } from './price-range/price-range.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -30,6 +31,7 @@ import { BookingModule } from './booking/booking.module';
     LawyerModule,
     VipPackageModule,
     BookingModule,
+    PriceRangeModule,
   ],
 
   controllers: [AppController],
