@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CloudUploadService } from 'src/shared/cloudUpload.service';
 import { EmailService } from 'src/email/email.service';
 import { AuthService } from 'src/auth/auth.service';
-import { Booking, Review, SubTypeLawyer, TypeLawyer, User, VipPackage } from 'src/config/database.config';
+import { Booking, MarketPriceRange, Review, SubTypeLawyer, TypeLawyer, User, VipPackage } from 'src/config/database.config';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateVipPackageDto } from '../vip-package/dto/create-vippackage.dto';
@@ -20,17 +20,15 @@ constructor(
   @InjectModel(TypeLawyer.name) private TypeLawyerModel: Model<TypeLawyer>,
   @InjectModel(SubTypeLawyer.name) private SubTypeLawyerModel: Model<SubTypeLawyer>,
   @InjectModel(VipPackage.name) private VipPackageModel: Model<VipPackage>,
-  @InjectModel(Booking.name) private BookingModel: Model<Booking>
+  @InjectModel(Booking.name) private BookingModel: Model<Booking>,
+  @InjectModel(MarketPriceRange.name) private MarketPriceRangeModel: Model<MarketPriceRange>
 ){}
 // giờ mình sẽ làm thao tác với luật sư trước xong tới thao tác với người dùng
 // luật sư sẽ có : thêm các gói
 // thấy user trong các gói - thông tin sdt
 // accept hoặc reject user
 // quản lí lịch làm việc 
-// thay đổi lí lịch luật sư trước đã
-// tạo gói vip 
- 
-
+// thay đổi lí lịch luật sư trước đã xong mới updat trong chỗ khống chế giá
   findAll() {
     return `This action returns all lawyer`;
   }
@@ -80,16 +78,19 @@ if (thisLawyer.typeLawyer === null || thisLawyer.typeLawyer === undefined) {
           subType:sub_type_lawyers
         })
         }
+// tạo 1 cái để khống chế cái booking 
+        
+
+      return{
+        status:200,
+        message: "Cập nhật thành công"
+      }
       }
       else{
         return{
           status:400,
           message:"Không phải lawyer thì không sửa được"
         }
-      }
-      return{
-        status:200,
-        message: "Cập nhật thành công"
       }
     } catch (error) {
       throw new Error(error)

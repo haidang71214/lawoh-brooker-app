@@ -8,7 +8,7 @@ export class BookingController {
   constructor(private readonly bookingService: BookingService) {}
 
 
-// những option cho booking: booking trên 1 tháng -10%, 1 năm -20%
+// những option cho booking: booking trên 1 tháng -10%, 1 năm -20%, có vip thì -5-10%
 // người dùng tạo mới booking- tạo thì tạo cho luật sư nào, vào kiểu vụ án gì
   @Post('')
   // hiện ở trong cái chi tiết luật sư á

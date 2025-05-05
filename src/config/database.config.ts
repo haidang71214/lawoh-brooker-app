@@ -230,6 +230,7 @@ export class Review extends Document {
   @Prop({ default:false })
   status:boolean
 }
+// này là admin tạo để khống chế giá
 @Schema({ timestamps: true, collection: 'MarketPriceRanges' })
 export class MarketPriceRange extends Document{
   @Prop({ required:true, enum:ETypeLawyer })
@@ -241,10 +242,20 @@ export class MarketPriceRange extends Document{
   @Prop({required:false})
   description:string; // mô tả, nếu cần
 }
+// này là luật sư tạo
+@Schema({ timestamps: true, collection: 'customPrices' })
+export class CustomPrice extends Document {
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  lawyer_id: Types.ObjectId;
+  @Prop({enum:ETypeLawyer})
+  type:ETypeLawyer;
+  @Prop()
+  price:number;
+  @Prop()
+  description:string
+}
 
-
-
-
+export const CustomPriceSchema = SchemaFactory.createForClass(CustomPrice);
 // tạo schema
 export const MarketPriceRangeSchema = SchemaFactory.createForClass(MarketPriceRange);
 export const UserSchema = SchemaFactory.createForClass(User);

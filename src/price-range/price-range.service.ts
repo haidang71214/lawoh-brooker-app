@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePriceRangeDto } from './dto/create-price-range.dto';
 import { UpdatePriceRangeDto } from './dto/update-price-range.dto';
-import { MarketPriceRange, User } from 'src/config/database.config';
+import { CustomPrice, MarketPriceRange, User } from 'src/config/database.config';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { AuthService } from 'src/auth/auth.service';
 import { EmailService } from 'src/email/email.service';
 import { CloudUploadService } from 'src/shared/cloudUpload.service';
+import { CustomPriceRangeDto } from './dto/create-price-range.dto';
+import { updatePriceBylawyerDto } from './dto/update-byLawyerDto';
 @Injectable()
 export class PriceRangeService {
   constructor(
@@ -14,8 +15,49 @@ export class PriceRangeService {
       private readonly mailService : EmailService,
       private readonly authService : AuthService,
       @InjectModel(User.name) private UserModel: Model<User>,
-    @InjectModel(MarketPriceRange.name) private MarketPriceRangeModel: Model<MarketPriceRange>
+    @InjectModel(MarketPriceRange.name) private MarketPriceRangeModel: Model<MarketPriceRange>,
+    @InjectModel(CustomPrice.name) private CustomPriceModel: Model<CustomPrice>
   ){}
+
+// hàm tạo giá cá nhân
+  async createHehe(userId:string,body:CustomPriceRangeDto){
+    try {
+      const checkLaywer = await this.UserModel.findById(userId);
+      const {Type,price,description} = body
+      if(checkLaywer?.role === 'lawyer'){
+      // check điều kiện
+      const checkPrice = await this.MarketPriceRangeModel.findOne({
+        type:Type
+      });
+
+    if (checkPrice && price >= checkPrice.minPrice && price <= checkPrice.maxPrice) {
+  await this.CustomPriceModel.create({
+    lawyer_id: userId,
+    type: Type,
+    price,
+    description
+  });
+
+  return {
+    status: 200,
+    message: 'Setup giá thành công'
+  };
+}
+  return{
+    status:404,
+    message:`Giá phải trong khoảng của ${checkPrice?.minPrice} tới ${checkPrice?.maxPrice}`
+  }
+
+      }
+      return {
+        status:401,
+        message:"Yêu cầu là luật sư"
+      }
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
 
   async findAll() {
    try {
@@ -66,4 +108,42 @@ export class PriceRangeService {
       throw new Error(error)
     }
   }
+
+async updateLawyerService(userId:string,body:updatePriceBylawyerDto){
+ try {
+      const checkLaywer = await this.UserModel.findById(userId);
+      const {Type,price,description} = body
+      if(checkLaywer?.role === 'lawyer'){
+      // check điều kiện
+      const checkPrice = await this.MarketPriceRangeModel.findOne({
+        type:Type
+      });
+
+    if (checkPrice && price >= checkPrice.minPrice && price <= checkPrice.maxPrice) {
+  await this.CustomPriceModel.findOneAndUpdate({
+    type:Type
+  },{
+    lawyer_id:userId,
+    price,
+    description
+  });
+
+  return {
+    status: 200,
+    message: 'Setup giá thành công'
+  };
+}
+  return{
+    status:404,
+    message:`Giá phải trong khoảng của ${checkPrice?.minPrice} tới ${checkPrice?.maxPrice}`
+  }
+      }
+      return {
+        status:401,
+        message:"Yêu cầu là luật sư"
+      }
+    } catch (error) {
+      throw new Error(error)
+    }
+}
 }
