@@ -11,19 +11,22 @@ export class LawyerController {
   constructor(private readonly lawyerService: LawyerService,
   ) {}
 // luật sư sẽ được tạo bên chỗ user
-// tạo gói vip
-  
 
   @Get()
-  findAll() {
-    return this.lawyerService.findAll();
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async findAll(
+    @Res() res:Response,
+    @Req() req
+  ) {
+    try {
+      const response = await this.lawyerService.findAllLawyer();
+      return res.status(response.status).json(response.response)
+    } catch (error) {
+      throw new Error(error)
+    }
   }
 // lấy chi tiết luật sư, bao gồn số sao, bài đánh giá, phần giới thiệu và giá
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.lawyerService.findOne(+id);
-  }
-
   @Patch('/lawyerUpdate')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()

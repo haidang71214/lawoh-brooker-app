@@ -72,7 +72,7 @@ private readonly TokenHeheControllerService: TokenControllerService
 }
 
 // check reset code với thay pass
-  @Post('/ChagePassWord')
+  @Post('/ChagePassword')
   @ApiResponse({ status: 200, description: 'Password updated successfully.' })
   async changePass(
     @Body()body:changePass,

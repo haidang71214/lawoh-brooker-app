@@ -19,7 +19,7 @@ export class UsersService {
     @InjectModel(Review.name) private ReviewModel: Model<Review>,
   
   ){}
-
+// hàm checkadmin
 
   async create(createUserDto: CreateUserDto,userId:number) {
  try {
@@ -110,13 +110,22 @@ async findOne(id: string) {
       };
     }
     // return ra theo hướng của thằng luật sư
-    else{
+    else if(responseUser?.role === 'lawyer'){
         return {
         status: 200,
         data: {
           user: responseUser,
           bookingLawyer,
           reviewLawyer
+        },
+      };
+    }
+    // này là của admin
+    else{
+        return {
+        status: 200,
+        data: {
+          user: responseUser,
         },
       };
     }

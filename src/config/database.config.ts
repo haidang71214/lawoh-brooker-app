@@ -204,6 +204,8 @@ export class Booking extends Document {
   // thêm chỗ thu nhập nếu accept
   @Prop()
   income:number;
+  @Prop({enum:ETypeLawyer})
+  typeBooking:ETypeLawyer
   @Prop()
   note: string; // khi user gửi request booking thì 
   // thằng lawyer sẽ dựa trên cái này để accept hoặc reject
@@ -242,11 +244,11 @@ export class MarketPriceRange extends Document{
   @Prop({required:false})
   description:string; // mô tả, nếu cần
 }
-// này là luật sư tạo
+// này là luật sư tạo để setup giá
 @Schema({ timestamps: true, collection: 'customPrices' })
 export class CustomPrice extends Document {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  lawyer_id: Types.ObjectId;
+  lawyer_id: Types.ObjectId; 
   @Prop({enum:ETypeLawyer})
   type:ETypeLawyer;
   @Prop()
@@ -254,6 +256,8 @@ export class CustomPrice extends Document {
   @Prop()
   description:string
 }
+
+
 
 export const CustomPriceSchema = SchemaFactory.createForClass(CustomPrice);
 // tạo schema

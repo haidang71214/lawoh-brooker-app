@@ -29,15 +29,24 @@ constructor(
 // accept hoặc reject user
 // quản lí lịch làm việc 
 // thay đổi lí lịch luật sư trước đã xong mới updat trong chỗ khống chế giá
-  findAll() {
-    return `This action returns all lawyer`;
+  async findAllLawyer() {
+    try {
+      const response = await this.UserModel.findOne({
+        role:'lawyer' // chỗ lồn này tự lấy hết cái lawyer ra
+      })
+      return{
+        status:200,
+        response
+      }
+    } catch (error) {
+      throw new Error(error)
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} lawyer`;
-  }
 
   // cái người luật sư đó update chuyên ngành của chính luật sư đó
+  // chuyển cái update này cho admin, luật sư tự tạo accout mới
+  // nếu muốn accept sang luật sư thì phải send request to admin
   async update(updateLawyerDto:UpdateLawyerDto,userId:string) {
     try {
       const thisLawyer = await this.UserModel.findById(userId);
@@ -96,7 +105,8 @@ if (thisLawyer.typeLawyer === null || thisLawyer.typeLawyer === undefined) {
       throw new Error(error)
     }
   }
-
+  
+// xóa luật sư ? 
   remove(id: number) {
     return `This action removes a #${id} lawyer`;
   }

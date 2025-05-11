@@ -123,6 +123,7 @@ async updateLawyerService(userId:string,body:updatePriceBylawyerDto){
   await this.CustomPriceModel.findOneAndUpdate({
     type:Type
   },{
+    type:Type,
     lawyer_id:userId,
     price,
     description

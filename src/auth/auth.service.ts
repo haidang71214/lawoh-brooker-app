@@ -15,14 +15,49 @@ import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class AuthService {
+
 constructor(
 @InjectModel(User.name) private readonly user_model : Model<User>,
 private readonly jwtService : JwtService,
 private readonly keyService : KeyService,
  private readonly mailService : EmailService
 ){}
-
-  
+async checkAdmin(userId: string): Promise<boolean> {
+  try {
+    const user = await this.user_model.findById(userId);
+    if (user?.role === 'admin') {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+async checkLawyer(userId: string): Promise<boolean> {
+  try {
+    const user = await this.user_model.findById(userId);
+    if (user?.role === 'lawyer') {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+async checkUser(userId: string): Promise<boolean> {
+  try {
+    const user = await this.user_model.findById(userId);
+    if (user?.role === 'user') {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+}
   async login(body:loginDto):Promise<any>{
     try {
       const {email,password} = body;
@@ -223,20 +258,6 @@ async loginFacebook(
     throw new Error(error)
   }
 }
-// checkAdmin trả ra 1 cái theo kiểu boolean, khi import ấy, thì nhớ import cái authModule vào để nó dùng được
-async checkAdmin(
-  userId:string
-){
-  try {
-    const checkAdmin = await this.user_model.findById(userId);
-    if(checkAdmin?.role === "admin"){
-      return true
-    }else{
-      return false
-    }
-  } catch (error) {
-    throw new Error(error)
-  }
-}
+
 
 }
