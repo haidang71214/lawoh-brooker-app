@@ -7,6 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateVipPackageDto } from '../vip-package/dto/create-vippackage.dto';
 import { UpdateLawyerDto } from './dto/update-lawyer.dto';
+import { FilterLawyerDto } from './dto/filterLawyer.dto';
 
 @Injectable()
 export class LawyerService {
@@ -42,31 +43,24 @@ constructor(
       throw new Error(error)
     }
   }
-
-
-  // cái người luật sư đó update chuyên ngành của chính luật sư đó
-  // chuyển cái update này cho admin, luật sư tự tạo accout mới
-  // nếu muốn accept sang luật sư thì phải send request to admin
+  
   async update(updateLawyerDto:UpdateLawyerDto,userId:string) {
     try {
       const thisLawyer = await this.UserModel.findById(userId);
       if(thisLawyer?.role === 'lawyer'){
-        const {description,type_lawyer,sub_type_lawyers} = updateLawyerDto
+        const {description,type_lawyer,sub_type_lawyers,experienceYear,certificate} = updateLawyerDto
 
 if (thisLawyer.typeLawyer === null || thisLawyer.typeLawyer === undefined) {
-// giờ mình sẽ kiểm tra, có rồi thì update, chưa có thì create
-// trong trường hợp dưới là chưa có
-// tạo mới 1 cái typelawyer
         const newTypeLawyer = await this.TypeLawyerModel.create({
-          type:type_lawyer
+          type:type_lawyer,
+          lawyer_id:thisLawyer._id // chỗ này sẽ lấy cái lawyer dễ hơn
         })
         await this.UserModel.findByIdAndUpdate(userId,{
           description,
-          typeLawyer:newTypeLawyer._id
+          typeLawyer:newTypeLawyer._id,
+          certificate,
+          experienceYear
         })
-// cái này lấy cái id từ typelawyer
-// bên fe sẽ duyệt mảng type_lawyer -> cho phép những cái gì có trong subtype
-// tạo mới 1 cái subtype
         await this.SubTypeLawyerModel.create({
           parentType: newTypeLawyer._id ,
           subType:sub_type_lawyers
@@ -77,7 +71,8 @@ if (thisLawyer.typeLawyer === null || thisLawyer.typeLawyer === undefined) {
         
         // hắn sẽ tìm đến cái id đó xong thay thế hoàn toàn bằng cái mới
         await this.TypeLawyerModel.replaceOne({_id:idTypeLawyer},{
-          type:type_lawyer
+          type:type_lawyer,
+          lawyer_id:userId
         });
         // sau khi update cái trên thì phải update cái cũ nữa
         await this.SubTypeLawyerModel.replaceOne({
@@ -87,9 +82,6 @@ if (thisLawyer.typeLawyer === null || thisLawyer.typeLawyer === undefined) {
           subType:sub_type_lawyers
         })
         }
-// tạo 1 cái để khống chế cái booking 
-        
-
       return{
         status:200,
         message: "Cập nhật thành công"
@@ -110,4 +102,84 @@ if (thisLawyer.typeLawyer === null || thisLawyer.typeLawyer === undefined) {
   remove(id: number) {
     return `This action removes a #${id} lawyer`;
   }
+
+//
+async filterLawyers(filterDto: FilterLawyerDto): Promise<{ data: any[], total: number }> {
+  const { stars, typeLawyer, province, page = 1, limit = 10 } = filterDto;
+  const query: any = { role: 'lawyer' };
+
+  // Lọc theo số sao (nếu có)
+  if (stars !== undefined) {
+    query.start = stars;
+}
+
+  // Lọc theo loại luật sư
+  if (typeLawyer) {
+    const typeLawyers = await this.TypeLawyerModel
+      .find({ type: { $regex: typeLawyer, $options: 'i' } })
+      .select('lawyer_id')
+      .exec();
+
+    const lawyerIds = typeLawyers.map((type) => type.lawyer_id);
+
+    if (lawyerIds.length > 0) {
+      query._id = { $in: lawyerIds };
+    } else {
+      return { data: [], total: 0 };
+    }
+  }
+
+  // Lọc theo tỉnh thành
+  if (province) {
+    query.province = { $regex: province, $options: 'i' };
+  }
+
+  // Tính toán phân trang
+  const skip = (page - 1) * limit;
+  
+  // Truy vấn dữ liệu với phân trang
+  const [data, total] = await Promise.all([
+    this.UserModel
+      .find(query)
+      .populate('typeLawyer')
+      .skip(skip)
+      .limit(limit)
+      .exec(),
+    this.UserModel.countDocuments(query).exec()
+  ]);
+
+  return { data, total };
+}
+
+async getDetailLawyer(id: string) {
+  try {
+    // Giả sử UserModel có field typeLawyer kiểu ObjectId ref 'TypeLawyer'
+    console.log(id);
+    
+    const data = await this.UserModel.findById(id)
+      .populate({
+        path: 'typeLawyer', // populate đến TypeLawyer
+      });
+
+    if (data && data.typeLawyer) {
+      const subTypes = await this.SubTypeLawyerModel.find({
+        parentType: data.typeLawyer._id,
+      });
+
+      return {
+        status: 200,
+        data: {
+          ...data.toObject(),
+          subTypes,
+        },
+      };
+    }
+
+    return { status: 404, message: 'Lawyer not found' };
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
 }

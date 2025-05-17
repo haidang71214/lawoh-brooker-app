@@ -11,6 +11,7 @@ import { VipPackageModule } from './vip-package/vip-package.module';
 import { BookingModule } from './booking/booking.module';
 import { PriceRangeModule } from './price-range/price-range.module';
 import { PaymentModule } from './payment/payment.module';
+import { ReviewModule } from './review/review.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { PaymentModule } from './payment/payment.module';
     BookingModule,
     PriceRangeModule,
     PaymentModule,
+    ReviewModule,
  
   ],
 

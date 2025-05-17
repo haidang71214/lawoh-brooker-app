@@ -10,7 +10,6 @@ import { KeyService } from 'src/key/key.service';
 import { RegisterDto } from './dto/register.dto';
 import { EmailService } from 'src/email/email.service';
 import { v4 as uuidv4 } from 'uuid';
-   import * as cookieParser from 'cookie-parser';
 
 
 @Injectable()
@@ -62,10 +61,11 @@ async checkUser(userId: string): Promise<boolean> {
     try {
       const {email,password} = body;
       const findUser = await this.user_model.findOne({email:email})
-      // em tạo schema ở đây rồi mà nó không gợi ý cho em ạ kiểu findUser._id hoặc findUser.name, 
-      console.log(findUser);
       if(!findUser){
-        return "User not found"
+        return {
+          status:400,
+          message:'"User not found"'
+        }   
       };
        if (!findUser) {
         throw new Error('không có trong hệ thống');
@@ -122,9 +122,8 @@ async checkUser(userId: string): Promise<boolean> {
         phone: body.phone,
         avartar_url: body.avartar_url,
         age:body.age,
-        role:body.role,
+        role:'user', 
         province : body.province,
-        warn: body.warn
       };
       this.mailService.sendMail(data.email,"Bạn đã đăng kí thành công","bạn đẹp trai vãi l")
       const createdUser = await this.user_model.create(data);

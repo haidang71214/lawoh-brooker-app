@@ -70,14 +70,18 @@ async findAll(userId: string, role?: string) {
     const isAdmin = await this.authService.checkAdmin(userId);
     if (!isAdmin) {
       return {
-        status: 200,
+        status: 400,
         message: "Không đủ quyền"
       };
     } else {
-      const users = await this.user_model.find();
-      // Nếu role được cung cấp, lọc theo role, nếu không, trả về tất cả
+      const users = await this.user_model
+  .find()
+  .populate('typeLawyer') 
+  .populate('bookings')    
+  .populate('reviews')      
+  .populate('vip_package')
+  .populate('learn_package');
       const filteredUsers = role ? users.filter(user => user.role === role) : users;
-      // sắp xếp 
      const sortedUsers = filteredUsers.sort((a: any, b: any) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
      
      return {
@@ -134,6 +138,26 @@ async findOne(id: string) {
   }
 }
 
+async changeRoleToUser(
+  id:string,newRole:string,userId:string
+){
+  console.log(newRole);
+  
+  const hehe = await this.authService.checkAdmin(userId)
+  if(hehe){
+    const user = await this.user_model.findById(id);
+    if (!user) {
+      return { status: 404, message: 'User không tồn tại' };
+    }
+
+    // Thay đổi role
+    user.role = newRole;
+    await user.save();
+       
+  return user
+  }
+
+}
 
 // khi đăng nhập, mặc định là xác định cái role ở đó luôn
 // muốn cập nhật cái description thì phải vào đây
@@ -144,7 +168,7 @@ async findOne(id: string) {
     updateUserDto: UpdateUserDto,
   userId:string) {
     const CheckAdmin = await this.authService.checkAdmin(id);
-    if(!CheckAdmin){
+    if(CheckAdmin === false){
       return{
         status:404,
         message:'Không có quyền'
@@ -152,7 +176,7 @@ async findOne(id: string) {
     }
    try {
     // tìm với cái id
-    const{password,phone,name,avartar_url,role,province,warn} = updateUserDto
+    const{password,phone,name,avartar_url,role,province} = updateUserDto
    const hashedPassword = await bcrypt.hash(password, 10);
      await this.user_model.findByIdAndUpdate(id,{
         password : hashedPassword,
@@ -161,7 +185,6 @@ async findOne(id: string) {
         avartar_url,
         role,
         province,
-        warn
       })
 
     return{
@@ -177,7 +200,7 @@ async findOne(id: string) {
   // user
   async updateTheoUser(userId:string,updateUserDto:UpdateUserDto){
     try {
-      const{name,phone,role,age,password,avartar_url,province,warn} = updateUserDto
+      const{name,phone,role,age,password,avartar_url,province} = updateUserDto
          const hashedPassword = await bcrypt.hash(password, 10);
       await this.user_model.findByIdAndUpdate(userId,{
         name,
@@ -186,16 +209,33 @@ async findOne(id: string) {
         age,
         password : hashedPassword,
         avartar_url,
-        province,warn
+        province
       });
       return {
         status:200,
         message:'Update thành công'
       }
     } catch (error) {
+      console.log(error);
+      
       throw new Error(error)
     }
   }
+  async findShiet(userId: string) {
+    try {
+      // Lấy danh sách booking theo client_id, chỉ chọn trường lawyer_id
+      const bookings = await this.BookingModel.find(
+        { client_id: userId }, // Chỉ trả về lawyer_id, ẩn _id mặc định
+      );
+      return {
+        status: 200,
+        data: bookings, // trả về trực tiếp mảng booking gồm lawyer_id
+      };
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+  
 
   // ở đây, mình chưa có cập nhật những cái bảng liên quan nên chưa làm trước
   remove(id: number) {

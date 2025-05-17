@@ -10,8 +10,6 @@ export class CreateBookingDto {
    booking_start:Date
    @ApiProperty()
    booking_end:Date
-   @ApiProperty()
-   income:number
    @ApiProperty({ enum:ETypeLawyer })
    typeBooking:ETypeLawyer
    @ApiProperty()

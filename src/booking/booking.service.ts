@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateBookingDto } from './dto/create-booking.dto';
-import { UpdateBookingDto } from './dto/update-booking.dto';
 import { AuthService } from 'src/auth/auth.service';
-import { Booking, MarketPriceRange, Review, TypeLawyer, User, VipPackage } from 'src/config/database.config';
+import { Booking, CustomPrice, MarketPriceRange, Review, TypeLawyer, User, VipPackage } from 'src/config/database.config';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
@@ -16,19 +15,31 @@ export class BookingService {
     @InjectModel(VipPackage.name) private VipPackageModel: Model<VipPackage>,
     @InjectModel(TypeLawyer.name) private TypeLawyerModel: Model<TypeLawyer>,
     @InjectModel(Review.name) private ReviewModel: Model<Review>,
-    @InjectModel(MarketPriceRange.name) private MarketPriceRangeModel: Model<MarketPriceRange> // db set cứng khoảng giá
+    @InjectModel(MarketPriceRange.name) private MarketPriceRangeModel: Model<MarketPriceRange>, // db set cứng khoảng giá
+    @InjectModel(CustomPrice.name) private CustomPriceModel: Model<CustomPrice>,
+  
   ){}
   // booking là của client tạo
   async create(createBookingDto: CreateBookingDto,userId:string) {
     try {
-      const {lawyer_id,booking_end,booking_start,income,typeBooking,note} = createBookingDto
+      const {lawyer_id,booking_end,booking_start,typeBooking,note} = createBookingDto
+      // lấy giá từ chính cái giá mà thằng luật sư đó setup
+      const findCustomPriceByLawyer = await this.CustomPriceModel.findOne({
+        lawyer_id:lawyer_id,
+        type:typeBooking
+      })
+      //check bookingDate now
+
+      // tính income, mình có thể lấy 10% user -> admin -> lawyer
       const respone = await this.BookingModel.create({
         lawyer_id,
         client_id:userId,
         booking_end,
         booking_start,
-        status:false,
-        income,typeBooking,note
+        status:'none',
+        income:findCustomPriceByLawyer?.price, // income được lấy từ cái tiền, type của thằng lawyer
+        typeBooking,
+        note
       });
       return{
         res:200,
@@ -38,15 +49,24 @@ export class BookingService {
       throw new Error(error)
     }
   }
-
-  async acceptBooking(adminId:string,client_id:string){
+// thuật toán chỗ này cần chặt chẽ hơn
+// thanh toán 
+  async acceptBooking(lawyerid:string,client_id:string){
     try {
-      const check = await this.authService.checkAdmin(adminId);
+      const check = await this.authService.checkLawyer(lawyerid);
       if(check){
-        await this.BookingModel.findOneAndUpdate({client_id},{
-          status:true     // tí xong check lại
+        //'none','accept','reject'
+       const hehe =  await this.BookingModel.findOneAndUpdate({client_id,lawyer_id:lawyerid},{
+          status:"accept"   
         })
-      }
+ // cái lồn này accept cái là mấy cái khác xóa,check thêm 1 điều kiện về type nữa
+          await this.BookingModel.deleteMany({
+          client_id,
+          lawyer_id: { $ne: lawyerid }, // nó sẽ tự xóa những cái mà nó liên kết với những lawyer khác
+          typeBooking : hehe?.typeBooking
+       });
+      } 
+
       return{
         status:200,
         message:"Đã accept thành công"
@@ -56,19 +76,50 @@ export class BookingService {
     }
   }
 
-  findAll() {
-    return `This action returns all booking`;
+  async findAll(userId:string) {
+    try {
+      const results = await this.BookingModel.findOne({lawyer_id:userId})
+      return{
+        status:200,
+        results
+      }
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+// logic để lấy đã đặt là nằm ở đây
+  async findOne(id: string,userId:string) {
+   try {
+    const response = await this.BookingModel.findOne({
+      client_id:id,
+      lawyer_id:userId
+    })
+    return{
+      status:200,
+      response
+    }
+   } catch (error) {
+    throw new Error(error)
+   }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} booking`;
-  }
 
-  update(id: number, updateBookingDto: UpdateBookingDto) {
-    return `This action updates a #${id} booking`;
-  }
+  async DeleteBooking(lawyerid :string,client_id:string){
+    try {
+      const check = await this.authService.checkLawyer(lawyerid);
+      if(check){
+      // reject thì giữ nguyên, không xóa
+       await this.BookingModel.findOneAndUpdate({client_id,lawyer_id:lawyerid},{
+          status:"reject"   
+        })
+      } 
 
-  remove(id: number) {
-    return `This action removes a #${id} booking`;
-  }
+      return{
+        status:200,
+        message:"Đã Reject thành công"
+      }
+    } catch (error) {
+      throw new Error(error)
+    }
+}
 }

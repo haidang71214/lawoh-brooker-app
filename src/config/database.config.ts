@@ -22,7 +22,7 @@ export enum ETypeLawyer {
   INHERITANCE = 'INHERITANCE',
   TAX = 'TAX',
 }
-
+// năm kinh nghiệm
 @Schema({ timestamps: true,
    collection: 'users',
 })
@@ -54,8 +54,6 @@ export class User extends Document {
   @Prop()
   province:string // tỉnh thành của thằng user
   @Prop()
-  warn:string // quận huyện 
-  @Prop()
   access_token:string;
 // reset_token
   @Prop()
@@ -63,9 +61,15 @@ export class User extends Document {
 // cái này là mô tả/ chỉ cho luật sư có quyền mô tả
   @Prop()
   description:string
+  // năm làm việc
+  @Prop()
+  experienceYear:number
+  // bằng cấp
+  @Prop()
+  certificate:string[]
   //sao* cái này để đánh giá ông luật sư
-  @Prop({default:0,limit:5})
-  start:number;
+  @Prop({default:0,min:0,max:5})
+  star:number;
   // loại luật sư // ngày mai sửa lại, cái này để mảng, cái ở dưới để bth 
 @Prop({
     type: MongooseSchema.Types.ObjectId,
@@ -165,6 +169,10 @@ export class TypeLawyer extends Document {
     enum: ETypeLawyer
   })
   type: ETypeLawyer[];
+
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  lawyer_id: Types.ObjectId;
+
 }
 // loại luật sư con cháu, loại này mình khống chế ở fe
 @Schema({ 
@@ -181,6 +189,7 @@ export class SubTypeLawyer extends Document {
   parentType: Types.ObjectId;
   @Prop({ required: false, type: [String] })
   subType: string;
+
 }
 
 // tạo 1 bảng booking, người dùng có thể thuê theo ngày, theo tháng hay theo năm với chính thằng luật sư đó, mình sẽ là người ăn hoa hồng
@@ -199,8 +208,8 @@ export class Booking extends Document {
   booking_end:Date;
   // hàm tự reset sẽ check chỗ booking_end 
   // trong trường hợp done-> thay bằng accept hoặc reject 
-  @Prop({default:false})
-  status: boolean;
+  @Prop({default:false,enum:['none','accept','reject']})
+  status: string;
   // thêm chỗ thu nhập nếu accept
   @Prop()
   income:number;
