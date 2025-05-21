@@ -77,9 +77,8 @@ export class User extends Document {
   })
   typeLawyer: Types.ObjectId;
   // review
-  @Prop({ type:MongooseSchema.Types.ObjectId, ref:'Review' })
-  // booking
-  reviews:Types.ObjectId;
+  @Prop({ type: [MongooseSchema.Types.ObjectId], ref: 'Review' })
+  reviews: MongooseSchema.Types.ObjectId[]; 
   @Prop({ type:MongooseSchema.Types.ObjectId,ref:'Booking' })
   bookings:Types.ObjectId;
   
@@ -208,7 +207,7 @@ export class Booking extends Document {
   booking_end:Date;
   // hàm tự reset sẽ check chỗ booking_end 
   // trong trường hợp done-> thay bằng accept hoặc reject 
-  @Prop({default:false,enum:['none','accept','reject']})
+  @Prop({default:false,enum:['none','accept','reject','done']})
   status: string;
   // thêm chỗ thu nhập nếu accept
   @Prop()
@@ -229,6 +228,7 @@ export class Review extends Document {
   client_id: Types.ObjectId; // đổi từ user_id qua client_id
   // Luật sư bị đánh giá
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  //lấy theo cái này
   lawyer_id: Types.ObjectId;
   // Số sao đánh giá (1-5)
   @Prop({ required: true, min: 1, max: 5 })
@@ -237,9 +237,6 @@ export class Review extends Document {
   comment: string;
   @Prop()
   review_date: Date;
-  // khi hết hết thuê thì hắn tự nhả ra true -> đồng thời client đánh giá lawyer
-  @Prop({ default:false })
-  status:boolean
 }
 // này là admin tạo để khống chế giá
 @Schema({ timestamps: true, collection: 'MarketPriceRanges' })
@@ -254,6 +251,7 @@ export class MarketPriceRange extends Document{
   description:string; // mô tả, nếu cần
 }
 // này là luật sư tạo để setup giá
+// đâyyy,thằng lawyer sẽ lấy cái này ra để setup giá
 @Schema({ timestamps: true, collection: 'customPrices' })
 export class CustomPrice extends Document {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
@@ -265,8 +263,41 @@ export class CustomPrice extends Document {
   @Prop()
   description:string
 }
+// admin sẽ sử dụng cái này để đki
+@Schema({ timestamps: true, collection: 'payments' })
+export class Payment extends Document {
+  @Prop({ required: true }) transaction_no: string;
+  @Prop({ required: true }) amount: number;
+  @Prop({ enum: ['VNPAY', 'Bank', 'Cash'], default: 'VNPAY' }) // method ở đây là vnpay hết
+  payment_method: string;
+  @Prop({ enum: ['pending', 'success', 'failed', 'refunded'], default: 'pending' }) status: string;
+  @Prop() response_code: string;
+  @Prop() payment_date: Date;
+  @Prop() vnp_PayDate: Date;
+  @Prop() vnp_TransactionStatus: string;
+  @Prop({ type: Types.ObjectId, ref: 'User' })
+  client_id: Types.ObjectId;
+@Prop({ type: Types.ObjectId, ref: 'User' }) 
+lawyer_id: Types.ObjectId;
+}
 
+@Schema({ timestamps: true, collection: 'lawyer_payments' })
+export class LawyerPayment extends Document {
+  @Prop({ type: Types.ObjectId, ref: 'Payment', required: true })
+   payment_id: Types.ObjectId;
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true }) lawyer_id: Types.ObjectId;
+  @Prop({ required: true }) amount: number;
+  @Prop({ required: true }) commission: number;
+  @Prop({ enum: ['pending', 'success', 'failed'], default: 'pending' }) status: string;
+  @Prop({ required: true, unique: true, type: String }) transaction_no: string;
+  @Prop() payment_date: Date;
+  @Prop() payment_method: string;
+}
 
+export const PaymentSchema = SchemaFactory.createForClass(Payment);
+ // tạo cái payment cho admin
+// tạo thêm 1 cái payment cho luật sư để quản lí nhận tiền
+export const LawyerPaymentSchema = SchemaFactory.createForClass(LawyerPayment) // 
 
 export const CustomPriceSchema = SchemaFactory.createForClass(CustomPrice);
 // tạo schema

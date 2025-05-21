@@ -3,12 +3,14 @@ import { BookingService } from './booking.service';
 import { BookingController } from './booking.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Booking, BookingSchema, CustomPrice, CustomPriceSchema, MarketPriceRange, MarketPriceRangeSchema, Review, ReviewSchema, SubTypeLawyer, SubTypeLawyerSchema, TypeLawyer, TypeLawyerSchema, User, UserSchema, VipPackage, VipPackageSchema } from 'src/config/database.config';
+import { Booking, BookingSchema, CustomPrice, CustomPriceSchema, MarketPriceRange, MarketPriceRangeSchema, Payment, PaymentSchema, Review, ReviewSchema, SubTypeLawyer, SubTypeLawyerSchema, TypeLawyer, TypeLawyerSchema, User, UserSchema, VipPackage, VipPackageSchema } from 'src/config/database.config';
 import { KeyModule } from 'src/key/key.module';
 import { EmailModule } from 'src/email/email.module';
 import { ShareModule } from 'src/shared/sharedModule';
 import { TokenControllerService } from 'utils/token.utils';
 import { AuthModule } from 'src/auth/auth.module';
+import { PaymentModule } from 'src/payment/payment.module';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   // mai làm booking
@@ -21,7 +23,8 @@ import { AuthModule } from 'src/auth/auth.module';
          {name:Booking.name,schema:BookingSchema},
          {name:Review.name,schema:ReviewSchema},
          {name:MarketPriceRange.name,schema:MarketPriceRangeSchema},
-         {name:CustomPrice.name,schema:CustomPriceSchema}
+         {name:CustomPrice.name,schema:CustomPriceSchema},
+         {name:Payment.name,schema:PaymentSchema}
        ]),
         JwtModule.register({}),KeyModule,EmailModule,ShareModule,TokenControllerService,AuthModule
   ],

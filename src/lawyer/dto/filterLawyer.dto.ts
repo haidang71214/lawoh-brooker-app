@@ -4,7 +4,7 @@ import { Type } from 'class-transformer';
 export class FilterLawyerDto {
   @IsOptional()
   @IsNumber()
-  @Type(() => Number) // Chuyển đổi chuỗi thành số
+  // @Type(() => Number) // Chuyển đổi chuỗi thành số
   stars?: number;
 
   @IsOptional()

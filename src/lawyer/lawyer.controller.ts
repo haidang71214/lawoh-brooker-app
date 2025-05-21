@@ -69,7 +69,7 @@ async getLawyer(@Query() filterDto: FilterLawyerDto, @Res() res: Response) {
         }
       });
     }
-
+// lấy thêm giá tiền ở đây
     return res.status(200).json({
       message: ' CableLawyers fetched successfully',
       data: lawyers,

@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CloudUploadService } from 'src/shared/cloudUpload.service';
 import { EmailService } from 'src/email/email.service';
 import { AuthService } from 'src/auth/auth.service';
-import { Booking, MarketPriceRange, Review, SubTypeLawyer, TypeLawyer, User, VipPackage } from 'src/config/database.config';
+import { Booking, CustomPrice, MarketPriceRange, Review, SubTypeLawyer, TypeLawyer, User, VipPackage } from 'src/config/database.config';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateVipPackageDto } from '../vip-package/dto/create-vippackage.dto';
@@ -22,7 +22,8 @@ constructor(
   @InjectModel(SubTypeLawyer.name) private SubTypeLawyerModel: Model<SubTypeLawyer>,
   @InjectModel(VipPackage.name) private VipPackageModel: Model<VipPackage>,
   @InjectModel(Booking.name) private BookingModel: Model<Booking>,
-  @InjectModel(MarketPriceRange.name) private MarketPriceRangeModel: Model<MarketPriceRange>
+  @InjectModel(MarketPriceRange.name) private MarketPriceRangeModel: Model<MarketPriceRange>,
+  @InjectModel(CustomPrice.name) private CustomeerPriceModel: Model<CustomPrice>
 ){}
 // giờ mình sẽ làm thao tác với luật sư trước xong tới thao tác với người dùng
 // luật sư sẽ có : thêm các gói
@@ -43,14 +44,20 @@ constructor(
       throw new Error(error)
     }
   }
-  
+
+
+// cái update của thằng luật sư đang có chút vấn đề ở đây, ở cái chỗ type này có liên kết với cái chỗ set giá
+// thay đổi cái là phải xóa cái giá không liên quan ở đây nữa luôn
   async update(updateLawyerDto:UpdateLawyerDto,userId:string) {
     try {
       const thisLawyer = await this.UserModel.findById(userId);
       if(thisLawyer?.role === 'lawyer'){
+        // bước 1. lấy cái tye_lawyer mới ở đây, bước 2// so sánh với cái type_lawyer cũ, nếu không có thì
+        // tâp trung vào cái này hơn nếu có thì thay thế, đồng thời phải xóa cái giá mình bỏ vào với cái type từ trước
+        // để thay thế cái type mới
         const {description,type_lawyer,sub_type_lawyers,experienceYear,certificate} = updateLawyerDto
-
-if (thisLawyer.typeLawyer === null || thisLawyer.typeLawyer === undefined) {
+if (thisLawyer.typeLawyer === null || thisLawyer.typeLawyer === undefined ) {
+  // ở chỗ này nó đang tạo 1 cái type mới
         const newTypeLawyer = await this.TypeLawyerModel.create({
           type:type_lawyer,
           lawyer_id:thisLawyer._id // chỗ này sẽ lấy cái lawyer dễ hơn
@@ -60,20 +67,26 @@ if (thisLawyer.typeLawyer === null || thisLawyer.typeLawyer === undefined) {
           typeLawyer:newTypeLawyer._id,
           certificate,
           experienceYear
-        })
+        }) 
+  // và đang tạo 1 cái subType mới
         await this.SubTypeLawyerModel.create({
           parentType: newTypeLawyer._id ,
           subType:sub_type_lawyers
         })
       }else{
         const idTypeLawyer = thisLawyer.typeLawyer;
-        console.log(idTypeLawyer);
-        
-        // hắn sẽ tìm đến cái id đó xong thay thế hoàn toàn bằng cái mới
+        // mình đỉnh vl
         await this.TypeLawyerModel.replaceOne({_id:idTypeLawyer},{
           type:type_lawyer,
-          lawyer_id:userId
+          lawyer_id:thisLawyer._id
         });
+        // và else thì cũng phải có 1 cái user update
+        await this.UserModel.findByIdAndUpdate(userId,{
+          description,
+          typeLawyer: idTypeLawyer,
+          certificate,
+          experienceYear
+        })
         // sau khi update cái trên thì phải update cái cũ nữa
         await this.SubTypeLawyerModel.replaceOne({
           parentType:idTypeLawyer
@@ -81,6 +94,62 @@ if (thisLawyer.typeLawyer === null || thisLawyer.typeLawyer === undefined) {
           parentType:idTypeLawyer,
           subType:sub_type_lawyers
         })
+        // lấy hết cái type trong chỗ id Type đó, xong mình đối chiếu, có những cái type nào, với cái lawyer_id:userId nào, trùng thì giữ lại, khác thì thay thế
+        const findTypeForLawyer = await this.TypeLawyerModel.findById(idTypeLawyer);
+        if (!findTypeForLawyer || !findTypeForLawyer.type || !Array.isArray(findTypeForLawyer.type)) {
+          throw new BadRequestException('Không tìm thấy thông tin chuyên môn.');
+        }
+        
+        
+     // Lấy danh sách customPrices hiện tại
+     const existingCustomPrices = await this.CustomeerPriceModel.find({
+      lawyer_id: userId,
+    }).lean();
+
+    const existingTypes = existingCustomPrices.map((cp) => cp.type);
+    const typesProcessed: string[] = [];
+
+    // Xử lý trong map với Promise.all để đảm bảo bất đồng bộ
+    await Promise.all(
+      findTypeForLawyer.type.map(async (type) => {
+        typesProcessed.push(type);
+        console.log(`Xử lý type: ${type}`);
+
+        const existingPrice = existingCustomPrices.find((cp) => cp.type === type);
+
+        if (existingPrice) {
+          // Giữ lại type trùng khớp (có thể cập nhật nếu cần)
+          console.log(`Giữ lại type: ${type}`);
+          await this.CustomeerPriceModel.updateOne(
+            { lawyer_id: userId, type },
+            { $set: { price: existingPrice.price } } // giữ lại giá cũ
+          );
+        } else {
+          // Thay thế/Thêm type mới
+          console.log(`Thêm mới type: ${type}`);
+          await this.CustomeerPriceModel.updateOne(
+            { lawyer_id: userId, type },
+            {
+              lawyer_id: userId,
+              type,
+              price: 0, // Giá mặc định
+              description: 'Mặc định',
+            },
+            { upsert: true }
+          );
+        }
+      })
+    );
+
+    // Xóa các type không còn trong findTypeForLawyer.type
+    const typesToRemove = existingTypes.filter((type) => !typesProcessed.includes(type));
+    if (typesToRemove.length > 0) {
+      await this.CustomeerPriceModel.deleteMany({
+        lawyer_id: userId,
+        type: { $in: typesToRemove },
+      });
+      console.log(`Đã xóa các type không còn tồn tại: ${typesToRemove}`);
+    }
         }
       return{
         status:200,
@@ -119,7 +188,7 @@ async filterLawyers(filterDto: FilterLawyerDto): Promise<{ data: any[], total: n
       .find({ type: { $regex: typeLawyer, $options: 'i' } })
       .select('lawyer_id')
       .exec();
-
+    // nó đang tìm với lawyer_id
     const lawyerIds = typeLawyers.map((type) => type.lawyer_id);
 
     if (lawyerIds.length > 0) {
@@ -161,16 +230,26 @@ async getDetailLawyer(id: string) {
         path: 'typeLawyer', // populate đến TypeLawyer
       });
 
+    // Lấy thêm subTypes và bảng giá
     if (data && data.typeLawyer) {
+      // Lấy các subtypes của loại luật sư
       const subTypes = await this.SubTypeLawyerModel.find({
         parentType: data.typeLawyer._id,
       });
+      console.log(data.id); // ??? .id thì được
+      
+      // Lấy giá tiền từ bảng CustomPrice cho luật sư
+      const customPrice = await this.CustomeerPriceModel.find({
+        lawyer_id: data.id,
+      });
 
+      // Trả về dữ liệu, bao gồm cả subtypes và customPrice
       return {
         status: 200,
         data: {
           ...data.toObject(),
           subTypes,
+          customPrice, // Thêm bảng giá vào kết quả
         },
       };
     }
@@ -181,5 +260,6 @@ async getDetailLawyer(id: string) {
     throw error;
   }
 }
+
 
 }
