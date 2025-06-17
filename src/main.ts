@@ -21,7 +21,7 @@ async function bootstrap() {
     app.enableCors({
       //  deploy fe, thay đổi những thứ có ở cái localhost
       // gán cái fe vào đây
-      origin: ['http://localhost:3000', process.env.NODE_ENV === 'production' ? `${URL_PRODUCTION}` : '*'],
+      origin: [process.env.NODE_ENV === 'production' ? `${URL_PRODUCTION}` : '*','http://localhost:3000'],
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
       credentials: true,
     });
