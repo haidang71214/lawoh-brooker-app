@@ -8,6 +8,7 @@ import { Payment } from 'src/config/database.config';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { AuthGuard } from '@nestjs/passport';
+import { URL_PRODUCTION } from 'src/main';
 
 @Controller('payment')
 export class PaymentController {
@@ -85,19 +86,18 @@ export class PaymentController {
         if (!payment) {
           throw new BadRequestException('Payment not found for transaction_no: ' + query['vnp_TxnRef']);
         }
-        //http://localhost:3000
        
-        return res.redirect(` https://lawohfe.onrender.com/payment-result?status=success&code=${responseCode}&txnRef=${query['vnp_TxnRef']}`);
+        return res.redirect(`${URL_PRODUCTION}/payment-result?status=success&code=${responseCode}&txnRef=${query['vnp_TxnRef']}`);
       } else {
         await this.PaymentModel.findOneAndUpdate(
           { transaction_no: query['vnp_TxnRef'] },
           { status: 'failed', payment_date: new Date() }
         );
-        return res.redirect(` https://lawohfe.onrender.com/payment-result?status=failed&code=${responseCode || '97'}&txnRef=${query['vnp_TxnRef']}`);
+        return res.redirect(`${URL_PRODUCTION}/payment-result?status=failed&code=${responseCode || '97'}&txnRef=${query['vnp_TxnRef']}`);
       }
     } catch (error) {
       console.log('Error:', error.message);
-      return res.redirect(` https://lawohfe.onrender.com/payment-result?status=error&message=${encodeURIComponent('Lỗi khi xử lý phản hồi VNPAY: ' + error.message)}`);
+      return res.redirect(`${URL_PRODUCTION}/payment-result?status=error&message=${encodeURIComponent('Lỗi khi xử lý phản hồi VNPAY: ' + error.message)}`);
     }
   }
 

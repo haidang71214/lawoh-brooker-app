@@ -7,6 +7,8 @@ import { setupSocketIo } from './config/socket-io';
 import { ChatService } from './message/message.service';
 import { CommentService } from './comment/comment.service';
 
+
+export const URL_PRODUCTION = 'https://lawohfe.onrender.com'
 async function bootstrap() {
   try {
     const app = await NestFactory.create(AppModule);
@@ -14,12 +16,12 @@ async function bootstrap() {
 
     // Cấu hình global pipes
     app.useGlobalPipes(new ValidationPipe());
-
+ 
     // Cấu hình CORS
     app.enableCors({
       //  deploy fe, thay đổi những thứ có ở cái localhost
       // gán cái fe vào đây
-      origin: ['http://localhost:3000', process.env.NODE_ENV === 'production' ? 'https://lawohfe.onrender.com' : '*'],
+      origin: ['http://localhost:3000', process.env.NODE_ENV === 'production' ? `${URL_PRODUCTION}` : '*'],
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
       credentials: true,
     });
