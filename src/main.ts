@@ -17,7 +17,9 @@ async function bootstrap() {
 
     // Cấu hình CORS
     app.enableCors({
-      origin: ['http://localhost:3000', process.env.NODE_ENV === 'production' ? 'https://yourdomain.com' : '*'],
+      //  deploy fe, thay đổi những thứ có ở cái localhost
+      // gán cái fe vào đây
+      origin: ['http://localhost:3000', process.env.NODE_ENV === 'production' ? 'https://lawohfe.onrender.com' : '*'],
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
       credentials: true,
     });
@@ -41,7 +43,7 @@ async function bootstrap() {
     const commentService = app.get(CommentService);
     setupSocketIo(app, chatService, commentService);
 
-    // Khởi động ứng dụng trên 0.0.0.0
+    // Khởi động ứng dụng trên 0.0.0.0 kệ mẹ cái env vì env đéo chạy được
     const port = process.env.PORT || 10000; // Mặc định 10000 theo tài liệu Render
 await app.listen(port, '0.0.0.0');
 console.log(`Ứng dụng đang chạy trên port: http://0.0.0.0:${port}`);
