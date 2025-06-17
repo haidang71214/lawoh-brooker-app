@@ -34,7 +34,7 @@ async function bootstrap() {
     SwaggerModule.setup('Swagger', app, swagger);
 
     // Lấy port từ process.env.PORT (Render) hoặc ConfigService
-    const port = process.env.PORT || configService.get<number>('PORT') || 8080;
+    // const port = process.env.PORT || configService.get<number>('PORT') || 8080;
 
     // Khởi tạo và setup Socket.io
     const chatService = app.get(ChatService);
@@ -42,9 +42,9 @@ async function bootstrap() {
     setupSocketIo(app, chatService, commentService);
 
     // Khởi động ứng dụng trên 0.0.0.0
-    await app.listen(port, '0.0.0.0');
-    // render đẩy lên 0 0 0 0 á
-    console.log(`Ứng dụng đang chạy trên port: http://0.0.0.0:${port}`);
+    const port = process.env.PORT || 10000; // Mặc định 10000 theo tài liệu Render
+await app.listen(port, '0.0.0.0');
+console.log(`Ứng dụng đang chạy trên port: http://0.0.0.0:${port}`);
   } catch (error) {
     console.error('Ứng dụng không khởi động được:', error.stack);
     process.exit(1);
