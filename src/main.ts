@@ -19,7 +19,7 @@ async function bootstrap() {
     app.enableCors({
       //  deploy fe, thay đổi những thứ có ở cái localhost
       // gán cái fe vào đây
-      origin: ['http://lawohfe.onrender.com', 'http://localhost:3000', '*'], // Thêm domain frontend
+      origin: ['http://localhost:3000', process.env.NODE_ENV === 'production' ? 'https://lawohfe.onrender.com' : '*'],
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
       credentials: true,
     });
