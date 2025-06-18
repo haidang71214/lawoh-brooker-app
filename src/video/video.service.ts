@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateVideoDto } from './dto/create-video.dto';
 import { UpdateVideoDto } from './dto/update-video.dto';
 import { Comment, User, Videos } from 'src/config/database.config';
@@ -8,6 +8,7 @@ import { CloudUploadService } from 'src/shared/cloudUpload.service';
 import { AcceptRejectAction, AcceptRejectDto } from './dto/acceptRejectBody';
 import { EmailService } from 'src/email/email.service';
 import { AuthService } from 'src/auth/auth.service';
+import { RtcRole, RtcTokenBuilder } from 'agora-access-token';
 
 @Injectable()
 export class VideoService {
@@ -222,5 +223,34 @@ export class VideoService {
     }
   }
 // comment bài viết, này chắc để realtime
-  
+  async getTokenCallVideo(clientId:string,lawyerId:string){
+    try {
+      const appId = process.env.AGORA_APP_ID; // Lấy từ .env
+      const appCertificate = process.env.AGORA_APP_CERTIFICATE;
+      if (!appId || !appCertificate) {
+        throw new HttpException('Thiếu thông tin Agora App ID hoặc Certificate', HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+
+      // Tạo channel name duy nhất cho cặp client-lawyer
+      const channelName = `${clientId}_${lawyerId}`;
+      const role = RtcRole.PUBLISHER; // Cả hai bên đều có thể publish
+      const expirationTimeInSeconds = 3600; // Token hết hạn sau 1 giờ
+      const currentTimestamp = Math.floor(Date.now() / 1000);
+      const privilegeExpiredTs = currentTimestamp + expirationTimeInSeconds;
+
+      const token = RtcTokenBuilder.buildTokenWithUid(
+        appId,
+        appCertificate,
+        channelName,
+        Number(clientId), // Dùng clientId làm UID
+        role,
+        privilegeExpiredTs
+      );
+
+      return { token, appId, channelName };
+    } catch (error) {
+      throw new Error(error)
+    }
+  }  
+
 }

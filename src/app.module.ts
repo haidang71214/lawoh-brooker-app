@@ -48,7 +48,7 @@ import { CommentModule } from './comment/comment.module';
     ClassificationModule,
     VideoModule,
     CommentModule,
- 
+    
   ],
 
   controllers: [AppController],
