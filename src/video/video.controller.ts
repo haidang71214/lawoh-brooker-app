@@ -91,7 +91,7 @@ async findAll(
       });
     }
   }
-  @Get('TokenCallVideo')
+  @Get('TokenCallVideo/:clientId/:lawyerId')
   async getToken(
     @Param('clientId') clientId :string,
     @Param('lawyerId') lawyerId:string,
@@ -99,8 +99,12 @@ async findAll(
   ){
     try {
       const response = await this.videoService.getTokenCallVideo(clientId,lawyerId)
+      console.log(response);
+      
       return response
     } catch (error) {
+      console.log(error);
+      
       throw new Error(error)
     }
   }
