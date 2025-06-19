@@ -4,8 +4,6 @@ import axios from 'axios';
 import { GetTokenDto } from './dto/GetTokenDto';
 import { CreateStringGeesetupDto } from './dto/create-string-geesetup.dto';
 
-
-
 @Injectable()
 export class StringGeesetupService {
   private readonly projectId: string;
@@ -15,10 +13,10 @@ export class StringGeesetupService {
   private restToken: string = '';
 
   constructor(private configService: ConfigService) {
-   const projectId = process.env.PROJECT_ID
-   const projectSecret = process.env.PROJECT_SECRET
-   const baseUrl = process.env.BASE_STRINGEE
-   const tokenHelperUrl = process.env.TOKEN_HELPER_URL
+    this.projectId = process.env.PROJECT_ID || '';
+    this.projectSecret = process.env.PROJECT_SECRET || '';
+    this.baseUrl = process.env.BASE_STRINGEE || 'https://api.stringee.com/v1/room2';
+    this.tokenHelperUrl = process.env.TOKEN_HELPER_URL || '';
   }
 
   private _authHeader() {
@@ -36,7 +34,7 @@ export class StringGeesetupService {
       );
       return response.data;
     } catch (error) {
-      throw new InternalServerErrorException('Failed to create room');
+      throw new InternalServerErrorException('Không thể tạo phòng');
     }
   }
 
@@ -46,7 +44,7 @@ export class StringGeesetupService {
       this.restToken = tokens.rest_access_token;
       return this.restToken;
     } catch (error) {
-      throw new InternalServerErrorException('Failed to set REST token');
+      throw new InternalServerErrorException('Không thể lấy REST token');
     }
   }
 
@@ -55,7 +53,7 @@ export class StringGeesetupService {
       const tokens = await this.getToken({ userId });
       return tokens.access_token;
     } catch (error) {
-      throw new InternalServerErrorException('Failed to get user token');
+      throw new InternalServerErrorException('Không thể lấy user token');
     }
   }
 
@@ -64,7 +62,20 @@ export class StringGeesetupService {
       const tokens = await this.getToken({ roomId });
       return tokens.room_token;
     } catch (error) {
-      throw new InternalServerErrorException('Failed to get room token');
+      throw new InternalServerErrorException('Không thể lấy room token');
+    }
+  }
+
+  async deleteRoom(roomId: string) {
+    try {
+      const response = await axios.put(
+        `${this.baseUrl}/delete`,
+        { roomId },
+        { headers: this._authHeader() },
+      );
+      return response.data;
+    } catch (error) {
+      throw new InternalServerErrorException('Không thể xóa phòng');
     }
   }
 
@@ -81,7 +92,7 @@ export class StringGeesetupService {
       });
       return response.data;
     } catch (error) {
-      throw new InternalServerErrorException('Failed to get token');
+      throw new InternalServerErrorException('Không thể lấy token');
     }
   }
 }
