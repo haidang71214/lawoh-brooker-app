@@ -18,6 +18,7 @@ import { MessageModule } from './message/message.module';
 import { ClassificationModule } from './classification/classification.module';
 import { VideoModule } from './video/video.module';
 import { CommentModule } from './comment/comment.module';
+import { StringGeesetupModule } from './string-geesetup/string-geesetup.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { CommentModule } from './comment/comment.module';
     ClassificationModule,
     VideoModule,
     CommentModule,
+    StringGeesetupModule,
     
   ],
 

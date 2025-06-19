@@ -342,6 +342,8 @@ export class Message extends Document {
   @Prop({ type: [Types.ObjectId], ref: 'User', default: [] })
   readBy: Types.ObjectId[];
 }
+
+
 // làm cái video
 @Schema({ timestamps: true, collection: 'Videos' })
 export class Videos extends Document{

@@ -91,23 +91,6 @@ async findAll(
       });
     }
   }
-  @Get('TokenCallVideo/:clientId/:lawyerId')
-  async getToken(
-    @Param('clientId') clientId :string,
-    @Param('lawyerId') lawyerId:string,
-    @Res() res:Response
-  ){
-    try {
-      const response = await this.videoService.getTokenCallVideo(clientId,lawyerId)
-      console.log(response);
-      
-      return response
-    } catch (error) {
-      console.log(error);
-      
-      throw new Error(error)
-    }
-  }
 // lấy chi tiết của cái video đó
   @Get(':id')
   async findOne(@Param('id') id: string,@Res() res:Response) {

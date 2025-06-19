@@ -222,58 +222,5 @@ export class VideoService {
       throw new Error(error)
     }
   }
-// comment bài viết, này chắc để realtime
-async getTokenCallVideo(clientId: string, lawyerId: string) {
-  try {
-    const appId = process.env.AGORA_APP_ID; // Lấy từ .env
-    const appCertificate = process.env.AGORA_APP_CERTIFICATE;
-    if (!appId || !appCertificate) {
-      throw new HttpException('Thiếu thông tin Agora App ID hoặc Certificate', HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    // Kiểm tra clientId và lawyerId
-    if (!clientId || !lawyerId) {
-      throw new HttpException('clientId hoặc lawyerId không hợp lệ', HttpStatus.BAD_REQUEST);
-    }
-
-    // Tạo channel name ngắn gọn và an toàn
-    const channelName = `${clientId}_${lawyerId}`.replace(/[^a-zA-Z0-9_]/g, '');
-    if (channelName.length > 64) {
-      throw new HttpException('Channel name quá dài', HttpStatus.BAD_REQUEST);
-    }
-
-    const role = RtcRole.PUBLISHER;
-    const expirationTimeInSeconds = 3600; // Token hết hạn sau 1 giờ
-    const currentTimestamp = Math.floor(Date.now() / 1000);
-    const privilegeExpiredTs = currentTimestamp + expirationTimeInSeconds;
-
-    // Sử dụng buildTokenWithUserAccount với clientId là chuỗi
-    const token = RtcTokenBuilder.buildTokenWithAccount(
-      appId,
-      appCertificate,
-      channelName,
-      clientId, // Sử dụng clientId trực tiếp dưới dạng string
-      role,
-      privilegeExpiredTs
-    );
-
-    console.log('Generated Token with UserAccount:', token, 'Channel:', channelName, 'AppId:', appId, 'ClientId:', clientId);
-
-    return {
-      token,
-      appId,
-      channelName,
-    };
-  } catch (error) {
-    console.error('Lỗi khi tạo token Agora:', error);
-    if (error instanceof HttpException) {
-      throw error;
-    }
-    throw new HttpException(
-      'Lỗi server khi tạo token Agora',
-      HttpStatus.INTERNAL_SERVER_ERROR,
-    );
-  }
-}
 
 }

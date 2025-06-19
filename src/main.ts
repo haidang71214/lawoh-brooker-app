@@ -43,8 +43,7 @@ async function bootstrap() {
 
     // Khởi tạo và setup Socket.io
     const chatService = app.get(ChatService);
-    const commentService = app.get(CommentService);
-    setupSocketIo(app, chatService, commentService);
+    setupSocketIo(app, chatService);
 
     // Khởi động ứng dụng trên 0.0.0.0 kệ mẹ cái env vì env đéo chạy được
     const port = process.env.PORT || 10000; // Mặc định 10000 theo tài liệu Render
