@@ -22,7 +22,7 @@ async function bootstrap() {
       //  deploy fe, thay đổi những thứ có ở cái localhost
       // gán cái fe vào đây
       // ,'http://localhost:3000'
-      origin: [process.env.NODE_ENV === 'production' ? `${URL_PRODUCTION}` : '*'],
+      origin: [process.env.NODE_ENV === 'production' ? `${URL_PRODUCTION}` : '*', 'http://localhost:3000'],
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
       credentials: true,
     });

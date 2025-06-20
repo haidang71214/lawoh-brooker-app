@@ -32,7 +32,10 @@ export class StringGeesetupService {
         { name: roomName, uniqueName },
         { headers: this._authHeader() },
       );
+      console.log(response);
       return response.data;
+      
+      
     } catch (error) {
       throw new InternalServerErrorException('Không thể tạo phòng');
     }
@@ -90,6 +93,8 @@ export class StringGeesetupService {
           rest,
         },
       });
+      console.log(response);
+      
       return response.data;
     } catch (error) {
       throw new InternalServerErrorException('Không thể lấy token');
