@@ -34,13 +34,14 @@ export function setupSocketIo(app: INestApplication, chatService: ChatService) {
       socket.join(roomId);
       const room = io.sockets.adapter.rooms.get(roomId);
       const numClients = room ? room.size : 0;
-      console.log(numClients);
-      console.log(roomId, clientId);
+      console.log('aaaaaaaaaaaasdasdasd ',roomId, clientId);
 // lỗi ở chỗ này, nó numClient khi rejcet là là null hoặc 1, nhưng khi khởi tạo lại thì nó đang auto = 2 
       if (numClients === 1) {
         io.to('dashboard').emit('room-update', { roomId, status: 'waiting', clients: [clientId, requestClientId] });
       } else if (numClients === 2) {
 // check lại trạng thái stated vì nó làm hư watting
+        console.log('trường hợp đã update ');
+        
         io.to('dashboard').emit('room-update', { roomId, status: 'started', clients: [requestClientId, clientId] });
       }
     });
