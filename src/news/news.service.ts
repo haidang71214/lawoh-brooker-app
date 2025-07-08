@@ -1,24 +1,19 @@
-import { Injectable, Req, Res, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Injectable} from '@nestjs/common';
 import { CreateNewsDto } from './dto/create-news.dto';
-import { UpdateNewsDto } from './dto/update-news.dto';
+
 import { AuthService } from 'src/auth/auth.service';
 import { New, User } from 'src/config/database.config';
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { JwtAuthGuard } from 'src/auth/stratergy/jwt.guard';
-import { ApiBearerAuth } from '@nestjs/swagger';
-import { FilesInterceptor } from '@nestjs/platform-express';
+
 import { CloudUploadService } from 'src/shared/cloudUpload.service';
-import { response, Response } from 'express';
-import { News } from './entities/news.entity';
+
 
 @Injectable()
 export class NewsService {
   constructor(
     private readonly authService : AuthService,
-    private readonly cloudUploadService : CloudUploadService,
     @InjectModel(New.name) private NewModel: Model<New>,
-    @InjectModel(User.name) private UserModel: Model<User>
   ){}
 // user tạo mới tin
 

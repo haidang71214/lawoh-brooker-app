@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, Req, Res, UploadedFiles } from '@nestjs/common';
 import { NewsService } from './news.service';
 import { CreateNewsDto } from './dto/create-news.dto';
-import { UpdateNewsDto } from './dto/update-news.dto';
 import { JwtAuthGuard } from 'src/auth/stratergy/jwt.guard';
 import { ApiBearerAuth, ApiConsumes } from '@nestjs/swagger';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -13,7 +12,6 @@ export class NewsController {
   constructor(private readonly newsService: NewsService,
      private readonly cloudUploadService : CloudUploadService,
   ) {}
-// ai cũng đăng bài được, admin sẽ là người duyệt
 @ApiConsumes('multipart/form-data')
   @Post()
   @UseGuards(JwtAuthGuard)
