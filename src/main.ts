@@ -13,7 +13,7 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule);
     const configService = app.get(ConfigService);
     const peerServer = PeerServer({
-      path: "/"
+      path: "/peerjs"
     });
     const expressApp = app.getHttpAdapter().getInstance(); // ✅ Lấy instance của Express
 expressApp.use('/peerjs', peerServer); // ✅ Mount PeerServer tại /peerjs
