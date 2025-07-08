@@ -15,7 +15,8 @@ async function bootstrap() {
     const peerServer = PeerServer({
       path: "/"
     });
-    app.use("/peerjs", peerServer); // mount tại /peerjs
+    const expressApp = app.getHttpAdapter().getInstance(); // ✅ Lấy instance của Express
+expressApp.use('/peerjs', peerServer); // ✅ Mount PeerServer tại /peerjs
 
     // Cấu hình global pipes
     app.useGlobalPipes(new ValidationPipe());
