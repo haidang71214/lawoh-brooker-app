@@ -51,7 +51,7 @@ expressApp.use('/peerjs', peerServer); // ✅ Mount PeerServer tại /peerjs
 
     // Khởi động ứng dụng trên 0.0.0.0 kệ mẹ cái env vì env đéo chạy được
     //process.env.PORT ||
-    const port =  8080; // Mặc định 10000 theo tài liệu Render
+    const port =  10000; // Mặc định 10000 theo tài liệu Render
 await app.listen(port, '0.0.0.0');
 console.log(`Ứng dụng đang chạy trên port: http://0.0.0.0:${port}`);
   } catch (error) {
