@@ -15,17 +15,10 @@ async function bootstrap() {
     const peerServer = PeerServer({
       path: "/peerjs"
     });
-    const expressApp = app.getHttpAdapter().getInstance(); // ✅ Lấy instance của Express
-expressApp.use('/peerjs', peerServer); // ✅ Mount PeerServer tại /peerjs
-
-    // Cấu hình global pipes
+    const expressApp = app.getHttpAdapter().getInstance(); 
+expressApp.use('/peerjs', peerServer); 
     app.useGlobalPipes(new ValidationPipe());
- 
-    // Cấu hình CORS
     app.enableCors({
-      //  deploy fe, thay đổi những thứ có ở cái localhost
-      // gán cái fe vào đây
-      // ,'http://localhost:3000'
       origin: [process.env.NODE_ENV === 'production' ? `${URL_PRODUCTION}` : '*','http://localhost:3000'],
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
       credentials: true,
