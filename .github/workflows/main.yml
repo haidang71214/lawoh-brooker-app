@@ -12,7 +12,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-          port: 22
+          port: 24700
           script: |
             cd /home/app-docker
             git fetch origin
