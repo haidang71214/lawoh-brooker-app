@@ -6,8 +6,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { setupSocketIo } from './config/socket-io';
 import { ChatService } from 'src/message/message.service';
 import { PeerServer } from 'peer';
-
-export const URL_PRODUCTION = 'https://lawohfe.onrender.com'
+// nhớ sửa lại thành https
+export const URL_PRODUCTION = 'http://103.57.223.234:4001'
 async function bootstrap() {
   try {
     const app = await NestFactory.create(AppModule);
