@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { setupSocketIo } from './config/socket-io';
-import { ChatService } from './message/message.service';
+import { ChatService } from 'src/message/message.service';
 import { PeerServer } from 'peer';
 
 export const URL_PRODUCTION = 'https://lawohfe.onrender.com'

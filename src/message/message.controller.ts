@@ -1,5 +1,5 @@
 import { Controller, Post, Body, Get, Param, Req, UseGuards, Res } from '@nestjs/common';
-import { ChatService } from './message.service';
+import { ChatService } from 'src/message/message.service';
 import { CreateConversationDto } from './dto/update-message.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/stratergy/jwt.guard';

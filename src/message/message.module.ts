@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ChatController } from './message.controller';
-import { ChatService } from './message.service';
+import { ChatService } from 'src/message/message.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Conversation, ConversationSchema, Message, MessageSchema } from 'src/config/database.config';
 import { AuthModule } from 'src/auth/auth.module';
