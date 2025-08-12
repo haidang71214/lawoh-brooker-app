@@ -17,10 +17,10 @@ jobs:
             cd /root/lawohprojectBe/testdeploydockercicd
             git fetch origin
             git checkout production
-            git pull
-            docker compose build
-            docker build -t lawoh
-            docker stop lawoh-container || true  
-            docker rm lawoh-container || true   
-            docker run -d --name lawoh-container -p 4000:8080 lawoh
-            
+            git pull origin production
+            docker build -t lawoh .
+            docker stop lawoh-container || true
+            docker rm lawoh-container || true
+            docker run -d --name lawoh-container -p 4000:3000 lawoh
+            docker ps -a
+            docker images
