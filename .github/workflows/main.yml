@@ -23,3 +23,4 @@ jobs:
             docker stop lawoh-container || true  
             docker rm lawoh-container || true   
             docker run -d --name lawoh-container -p 4000:8080 lawoh
+            
