@@ -18,7 +18,7 @@ jobs:
             git fetch origin
             git checkout production
             git pull
-            docker compose build
+            docker-compose build
             docker build -t lawoh
             docker stop lawoh-container || true  
             docker rm lawoh-container || true   
