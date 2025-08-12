@@ -26,7 +26,7 @@ expressApp.use('/peerjs', peerServer);
 
     // Cấu hình Swagger
     const configSwagger = new DocumentBuilder()
-      .setTitle('API LAWOH')
+      .setTitle('API LAWOHaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
       .setDescription('LAWOH API LIST')
       .setVersion('1.0')
       .addBearerAuth()
