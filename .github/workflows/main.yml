@@ -16,8 +16,8 @@ jobs:
           script: |
             cd /root/lawohprojectBe/testdeploydockercicd
             git fetch origin
-            git checkout production
-            git pull origin production
+            git checkout master
+            git pull origin master
             docker build -t lawoh .
             docker stop lawoh-container || true
             docker rm lawoh-container || true
