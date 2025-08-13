@@ -6,7 +6,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { setupSocketIo } from './config/socket-io';
 import { ChatService } from 'src/message/message.service';
 import { PeerServer } from 'peer';
-// nhớ sửa lại thành https
 export const URL_PRODUCTION = 'http://103.57.223.234:4001'
 async function bootstrap() {
   try {
@@ -19,14 +18,14 @@ async function bootstrap() {
 expressApp.use('/peerjs', peerServer); 
     app.useGlobalPipes(new ValidationPipe());
     app.enableCors({
-      origin: [process.env.NODE_ENV === 'production' ? `${URL_PRODUCTION}` : '*','http://localhost:3000'],
+      origin: [`http://103.57.223.234:4001`,'http://localhost:3000'],
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
       credentials: true,
     });
 
     // Cấu hình Swagger
     const configSwagger = new DocumentBuilder()
-      .setTitle('API LAWOH')
+      .setTitle('API LAWOHa')
       .setDescription('LAWOH API LIST')
       .setVersion('1.0')
       .addBearerAuth()
