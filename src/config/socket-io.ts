@@ -6,7 +6,7 @@ import { ChatService } from 'src/message/message.service';
 export function setupSocketIo(app: INestApplication, chatService: ChatService) {
   const server = app.getHttpServer();
   const io = new Server(server, { cors: { origin: '*' } });
-
+  // Ví dụ:
   // chỉ connection 1 lần
   io.on('connection', socket => {
     console.log('Client connected:', socket.id);

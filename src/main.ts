@@ -7,7 +7,7 @@ import { setupSocketIo } from './config/socket-io';
 import { ChatService } from 'src/message/message.service';
 import { PeerServer } from 'peer';
 // nhớ sửa lại thành https
-export const URL_PRODUCTION = 'http://103.57.223.234:4001'
+export const URL_PRODUCTION = 'http://103.57.223.234:4000'
 async function bootstrap() {
   try {
     const app = await NestFactory.create(AppModule);
@@ -36,10 +36,7 @@ expressApp.use('/peerjs', peerServer);
     SwaggerModule.setup('Swagger', app, swagger);
     const chatService = app.get(ChatService);
     setupSocketIo(app, chatService);
-
-    // Khởi động ứng dụng trên 0.0.0.0 kệ mẹ cái env vì env đéo chạy được
-    //process.env.PORT ||
-    const port =  8080; // Mặc định 10000 theo tài liệu Render
+    const port =  8080; 
 await app.listen(port, '0.0.0.0');
 console.log(`Ứng dụng đang chạy trên port: http://0.0.0.0:${port}`);
   } catch (error) {
