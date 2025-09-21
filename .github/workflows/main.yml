@@ -15,7 +15,7 @@ jobs:
           port: 24700
           script: |
             cd /root/lawohprojectBe/testdeploydockercicd
-            git fetch origin
+            git fetch origin 
             git checkout master
             git pull origin master
             docker build -t lawoh .

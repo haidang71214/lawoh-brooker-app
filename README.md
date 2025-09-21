@@ -1,98 +1,265 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+Lawyer Broker App
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A web-based platform for connecting clients with lawyers, built with Next.js, TypeScript, and MongoDB. It streamlines lawyer hiring, profile management, and secure authentication.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+🚀 Features
 
-## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Project setup
 
-```bash
-$ npm install
-```
 
-## Compile and run the project
+👨‍⚖️ Lawyer Management – Admins add, edit, and manage lawyer profiles.
 
-```bash
-# development
-$ npm run start
 
-# watch mode
-$ npm run start:dev
 
-# production mode
-$ npm run start:prod
-```
+🤝 Client Booking – Customers browse and hire lawyers.
 
-## Run tests
 
-```bash
-# unit tests
-$ npm run test
 
-# e2e tests
-$ npm run test:e2e
+📸 Image Upload – Upload lawyer profile images via Cloudinary.
 
-# test coverage
-$ npm run test:cov
-```
 
-## Deployment
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+🔐 Authentication – Secure login for Admins (full access) and Customers (browse/book) using asymmetric cryptography.
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+🛠️ Tech Stack
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+Frontend: Next.js, TypeScript, TailwindCSS
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Backend: Node.js, Nest.js , ts 
 
-## Resources
 
-Check out a few resources that may come in handy when working with NestJS:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+Database: MongoDB (Mongoose ODM)
 
-## Support
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-## Stay in touch
+Authentication: JWT with asymmetric keys (RSA/ECDSA)
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Image Upload: Cloudinary
 
-## License
+Web RTC : Peerjs
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Payment : Vnpay(demo)
+
+Tools: Docker, Git, Postman
+
+
+📂 Project Structure
+
+lawyer-broker/
+├── backend/                # Express + MongoDB server
+│   ├── src/               
+│   │   ├── auth/           # Authentication logic
+│   │   ├── booking/        # Booking-related code
+│   │   ├── classification/ # Lawyer classification
+│   │   ├── cloudinary/     # Cloudinary image handling
+│   │   ├── comment/        # Comment system
+│   │   ├── config/         # Configuration files
+│   │   ├── email/          # Email services
+│   │   ├── form/           # Form handling
+│   │   ├── key/            # Key management
+│   │   ├── lawyer/         # Lawyer-related logic
+│   │   ├── message/        # Messaging system
+│   │   ├── news/           # News or announcements
+│   │   ├── payment/        # Payment processing
+│   │   ├── price-range/    # Price range logic
+│   │   ├── review/         # Review system
+│   │   ├── shared/         # Shared utilities
+│   │   ├── storage/        # Storage management
+│   │   ├── users/          # User management
+│   │   ├── video/          # Video handling
+│   │   ├── vip-package/    # VIP package logic
+│   │   ├── app.controller.spec.ts  # Test file
+│   │   ├── app.controller.ts       # Controller
+│   │   ├── app.module.ts           # Module
+│   │   ├── app.service.ts          # Service
+│   │   └── main.ts                # App entry point
+│   ├── docker-compose.yml      # Docker config for MongoDB
+│   ├── .env                    # Environment variables
+│   ├── .gitignore              # Git ignore file
+│   ├── .prettierrc             # Prettier config
+│   ├── dockerfile              # Docker file
+│   ├── eslint-config.mjs       # ESLint config
+│   ├── nest-cli.json           # Nest CLI config
+│   ├── package-lock.json       # Package lock
+│   ├── package.json            # Package file
+│   └── tsconfig.build.json     # TypeScript config
+│   └── tsconfig.json           # TypeScript config
+├── frontend/                   # Next.js app
+│   ├── src/                   
+│   │   ├── components/         # Reusable UI components
+│   │   ├── pages/              # Pages (Home, Lawyers, etc.)
+│   │   ├── services/           # API calls
+│   │   └── app.tsx             # App entry point
+└── README.md
+
+⚡ Installation & Setup
+
+1️⃣ Clone repository
+
+git clone https://github.com/username/lawyer-broker.git
+cd lawyer-broker
+
+2️⃣ Setup backend
+
+cd backend
+npm install
+
+Set .env:
+
+MONGODB_URI=mongodb://localhost:27017/lawyer_broker_db
+JWT_PRIVATE_KEY=your_private_key
+JWT_PUBLIC_KEY=your_public_key
+CLOUDINARY_URL=your_cloudinary_url
+
+3️⃣ Setup database (Docker)
+
+Use docker-compose.yml:
+
+version: '3.8'
+services:
+  db:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_DATABASE: lawyer_broker_db
+    ports:
+      - '27017:27017'
+    volumes:
+      - db-data:/data/db
+volumes:
+  db-data:
+
+Run:
+
+docker-compose up -d
+
+4️⃣ Setup frontend
+
+cd frontend
+npm install
+
+5️⃣ Run application
+
+Backend:
+
+cd backend
+npm run start:dev
+
+Frontend:
+
+cd frontend
+npm run dev
+
+App runs at:
+
+
+
+
+
+Frontend: http://localhost:4000
+
+
+
+Backend: http://localhost:4001
+
+🧪 Tests
+
+# Backend unit tests
+cd backend
+npm run test
+
+# Frontend tests
+cd frontend
+npm run test
+
+🚀 Deployment
+
+Deploy with Docker or follow Next.js deployment docs. Example Docker setup for production:
+
+version: '3.8'
+services:
+  backend:
+    image: node:18
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+    command: npm run start:prod
+    ports:
+      - '4001:4001'
+  frontend:
+    image: node:18
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    command: npm run build && npm run start
+    ports:
+      - '4000:4000'
+  db:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_DATABASE: lawyer_broker_db
+    volumes:
+      - db-data:/data/db
+volumes:
+  db-data:
+
+Live deployment:
+
+
+
+
+
+Backend: http://103.57.223.234:4000/Swagger
+
+
+
+Frontend: http://103.57.223.234:4001
+
+🤝 Contributing
+
+
+
+
+
+Fork repo.
+
+
+
+Create branch (git checkout -b feature/your-feature).
+
+
+
+Commit (git commit -m 'Add feature').
+
+
+
+Push (git push origin feature/your-feature).
+
+
+
+Create Pull Request.
+
+📚 Resources
+
+
+
+
+
+Next.js Docs
+
+
+
+MongoDB Docs
+
+
+
+Cloudinary Docs
+
+
+
+Docker Docs
+
+📜 License
+
+MIT
