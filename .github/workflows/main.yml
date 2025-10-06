@@ -14,13 +14,13 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: 24700
           script: |
-            cd /root/lawohproject/lawohprojectBe/testdeploydockercicd
-            git fetch origin 
+           cd /root/lawohproject  
+            # đại khái là nó sẽ vô folder bằng lệnh này trước
+            git fetch origin
             git checkout master
             git pull origin master
-            docker build -t lawoh .
-            docker stop lawoh-container || true
-            docker rm lawoh-container || true
-            docker run -d --name lawoh-container -p 4000:8080 lawoh
-            docker ps -a
-            docker images
+            docker-compose -f docker-compose.prod.yml down
+            docker container prune -f
+            docker image prune -f
+            docker-compose -f docker-compose.prod.yml up -d --build --force-recreate
+            docker-compose -f docker-compose.prod.yml logs --tail=20
