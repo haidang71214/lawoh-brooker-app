@@ -19,8 +19,8 @@ jobs:
             git fetch origin
             git checkout master
             git pull origin master
-            docker compose -f docker-compose.prod.yml down
+            docker compose -f docker-compose.yml down
             docker container prune -f
             docker image prune -f
-            docker compose -f docker-compose.prod.yml up -d --build --force-recreate
-            docker compose -f docker-compose.prod.yml logs --tail=20
+            docker compose -f docker-compose.yml up -d --build --force-recreate
+            docker compose -f docker-compose.yml logs --tail=20
