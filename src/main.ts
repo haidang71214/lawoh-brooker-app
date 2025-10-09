@@ -18,7 +18,7 @@ async function bootstrap() {
 expressApp.use('/peerjs', peerServer); 
     app.useGlobalPipes(new ValidationPipe());
     app.enableCors({
-      origin: ['http://www.lawoh.click',`http://103.57.223.234:4001`,'http://localhost:3000'],
+      origin: ['https://www.lawoh.click',`http://103.57.223.234:4001`,'http://localhost:3000'],
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
       credentials: true,
     });
